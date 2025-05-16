@@ -1,0 +1,1 @@
+// User struct has been moved to Domain/Models/User.swift 
