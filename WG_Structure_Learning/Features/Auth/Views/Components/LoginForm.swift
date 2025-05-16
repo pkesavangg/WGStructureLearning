@@ -1,10 +1,8 @@
 import SwiftUI
 
 struct LoginForm: View {
-    @Binding var email: String
-    @Binding var password: String
-    @Binding var rememberMe: Bool
-    let onLogin: () -> Void
+    @State private var formConfig = LoginFormConfig()
+    let onLogin: (String, String) -> Void
     let onForgotPassword: () -> Void
     let onSignUp: () -> Void
     
@@ -13,21 +11,18 @@ struct LoginForm: View {
             AuthTextField(
                 title: "Email",
                 placeholder: "Enter your email",
-                text: $email,
+                text: $formConfig.email,
                 keyboardType: .emailAddress
             )
             
             AuthTextField(
                 title: "Password",
                 placeholder: "Enter your password",
-                text: $password,
+                text: $formConfig.password,
                 isSecure: true
             )
             
             HStack {
-                Toggle("Remember me", isOn: $rememberMe)
-                    .font(.subheadline)
-                
                 Spacer()
                 
                 Button("Forgot Password?") {
@@ -38,15 +33,27 @@ struct LoginForm: View {
             }
             .padding(.horizontal)
             
-            Button(action: onLogin) {
+            Button(action: {
+                if formConfig.isValid {
+                    onLogin(formConfig.email, formConfig.password)
+                }
+            }) {
                 Text("Login")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(formConfig.isValid ? Color.blue : Color.gray)
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
+            .disabled(!formConfig.isValid)
             .padding(.horizontal)
+            
+            if let error = formConfig.validationErrorMessage {
+                Text(error)
+                    .foregroundColor(.red)
+                    .font(.caption)
+                    .padding(.top, 4)
+            }
             
             HStack {
                 Text("Don't have an account?")

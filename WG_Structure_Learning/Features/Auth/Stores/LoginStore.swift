@@ -5,14 +5,12 @@ import Foundation
 final class LoginStore {
     @ObservationIgnored
     @Injector private var accountService: AccountService
-    var email = ""
-    var password = ""
-    var rememberMe = false
+    
     var isLoading = false
     var error: String?
     var isAuthenticated = false
 
-    func login() async {
+    func login(email: String, password: String) async {
         isLoading = true
         error = nil
         do {

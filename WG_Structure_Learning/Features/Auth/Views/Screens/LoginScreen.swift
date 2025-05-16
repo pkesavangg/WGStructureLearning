@@ -17,12 +17,9 @@ struct LoginScreen: View {
                         .padding(.bottom, 30)
                     
                     LoginForm(
-                        email: $store.email,
-                        password: $store.password,
-                        rememberMe: $store.rememberMe,
-                        onLogin: {
+                        onLogin: { email, password in
                             Task {
-                                await store.login()
+                                await store.login(email: email, password: password)
                             }
                         },
                         onForgotPassword: {
