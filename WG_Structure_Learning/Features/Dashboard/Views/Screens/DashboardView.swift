@@ -15,35 +15,8 @@ struct DashboardView: View {
                 Text("Welcome to the Dashboard")
                     .font(.title)
                     .padding()
-
-                
-                Button("Logout") {
-                    store.logout()
-                }
-                .buttonStyle(.borderedProminent)
             }
             .environment(store)
-        }
-    }
-}
-
-
-
-struct SettingsView: View {
-    @Environment(DashboardStore.self) var store
-    
-    var body: some View {
-        VStack {
-            Text("Settings")
-                .font(.title)
-                .padding()
-            
-            Button {
-                store.logout()
-            } label: {
-                Text("Logout")
-                    .foregroundColor(.red)
-            }
         }
     }
 }
