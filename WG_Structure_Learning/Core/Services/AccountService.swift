@@ -7,9 +7,10 @@
 import Foundation
 
 @MainActor
+@Observable
 final class AccountService {
     static let shared = AccountService()
-    @Published var currentUser: User? = nil
+    var currentUser: User? = nil
 
     private let userRepository = SwiftDataUserRepository()
     private let firebaseRepository = FirebaseAuthRepository()

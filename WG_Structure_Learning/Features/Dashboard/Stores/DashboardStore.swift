@@ -7,10 +7,12 @@
 
 import Foundation
 
-
-class DashboardStore: ObservableObject {
+@MainActor
+@Observable
+class DashboardStore {
+    @ObservationIgnored
     @Injector private var accountService: AccountService
-    
+        
     // Logout
     func logout() {
         Task {

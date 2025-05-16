@@ -1,16 +1,16 @@
 import Foundation
-import SwiftUI
-import SwiftData
 
 @MainActor
-final class LoginStore: ObservableObject {
+@Observable
+final class LoginStore {
+    @ObservationIgnored
     @Injector private var accountService: AccountService
-    @Published var email = ""
-    @Published var password = ""
-    @Published var rememberMe = false
-    @Published var isLoading = false
-    @Published var error: String?
-    @Published var isAuthenticated = false
+    var email = ""
+    var password = ""
+    var rememberMe = false
+    var isLoading = false
+    var error: String?
+    var isAuthenticated = false
 
     func login() async {
         isLoading = true
@@ -46,4 +46,5 @@ final class LoginStore: ObservableObject {
         }
     }
 }
+
 

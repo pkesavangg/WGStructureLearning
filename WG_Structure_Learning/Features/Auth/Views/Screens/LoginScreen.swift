@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct LoginScreen: View {
-    @StateObject private var store: LoginStore = LoginStore()
+    @Bindable var store: LoginStore = LoginStore()
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {

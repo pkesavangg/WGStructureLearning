@@ -8,45 +8,47 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @StateObject var store = DashboardStore()
+    var store = DashboardStore()
     var body: some View {
         NavigationStack {
             VStack {
                 Text("Welcome to the Dashboard")
                     .font(.title)
                     .padding()
-                
-                NavigationLink(destination: SettingsView().environmentObject(store)) {
-                    Text("Go to Settings")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                }
+
                 
                 Button("Logout") {
                     store.logout()
                 }
                 .buttonStyle(.borderedProminent)
             }
+            .environment(store)
         }
     }
 }
 
 
+
 struct SettingsView: View {
-    @EnvironmentObject var store: DashboardStore
+    @Environment(DashboardStore.self) var store
+    
     var body: some View {
         VStack {
             Text("Settings")
                 .font(.title)
                 .padding()
             
-            Button("Logout") {
+            Button {
                 store.logout()
+            } label: {
+                Text("Logout")
+                    .foregroundColor(.red)
             }
-            .buttonStyle(.borderedProminent)
         }
     }
 }
 
+#Preview {
+    SettingsView()
+        .environment(DashboardStore())
+}

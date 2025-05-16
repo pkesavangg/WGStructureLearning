@@ -1,3 +1,10 @@
+//
+//  FirebaseAuthRepository.swift
+//  WG_Structure_Learning
+//
+//  Created by Kesavan Panchabakesan on 16/05/25.
+//
+
 import Foundation
 
 class FirebaseAuthRepository: AuthRepository {

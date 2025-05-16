@@ -23,7 +23,6 @@ class DependencyContainer {
     }
 }
 
-
 @propertyWrapper
 struct Injector<Value> {
     private var value: Value?
