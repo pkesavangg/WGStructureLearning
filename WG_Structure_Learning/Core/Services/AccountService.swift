@@ -5,12 +5,13 @@
 //  Created by Kesavan Panchabakesan on 15/05/25.
 //
 import Foundation
+import SwiftData
 
 @MainActor
 @Observable
 final class AccountService {
     static let shared = AccountService()
-    var currentUser: User? = nil
+    var currentUser: AccountModel? = nil
 
     private let userRepository = SwiftDataUserRepository()
     private let firebaseRepository = FirebaseAuthRepository()
@@ -23,8 +24,8 @@ final class AccountService {
     init() {
         do {
             try loadCurrentUser()
-        } catch  {
-            
+        } catch {
+            print("Failed to load current user:", error)
         }
     }
     
@@ -36,18 +37,15 @@ final class AccountService {
             let loginRequest = LoginRequest(email: email, password: password)
             
             do {
-                let response: LoginResponse = try await httpClient.send(
+                let response: Account = try await httpClient.send(
                     .login,
                     method: "POST",
                     body: loginRequest
                 )
-                
-                print("API Response:", response)
-                
-                // Create and save user with the account data
-                let user = User(id: response.account.id, email: response.account.email)
-                try userRepository.saveUser(user)
-                currentUser = user
+                // Create and save auth user with the response data
+                let authUser = AccountModel(from: response)
+                try userRepository.saveAuthUser(authUser)
+                currentUser = authUser
                 return true
             } catch {
                 print("API Error:", error)
@@ -56,16 +54,41 @@ final class AccountService {
         }
         return false
     }
+    
+    func updateUserProfile() async throws {
+        guard let currentUser = currentUser else { return }
+        
+        do {
+//            let response: UserResponse = try await httpClient.send(
+//                .getAccount,
+//                method: "GET"
+//            )
+//            
+//            // Update the current user with new data
+//            let updatedAuthUser = AuthUserModel(from: LoginResponse(
+//                account: response,
+//                accessToken: currentUser.accessToken,
+//                refreshToken: currentUser.refreshToken,
+//                expiresAt: currentUser.expiresAt
+//            ))
+//            
+//            try userRepository.updateAuthUser(updatedAuthUser)
+//            self.currentUser = updatedAuthUser
+        } catch {
+            print("Failed to update user profile:", error)
+            throw error
+        }
+    }
 
     func loadCurrentUser() throws {
-        if let savedUser = try userRepository.getCurrentUser() {
+        if let savedUser = try userRepository.getCurrentAuthUser() {
             currentUser = savedUser
         }
     }
 
     func signOut() async throws {
         try await firebaseRepository.signOut()
-        try userRepository.deleteUser()
+        try userRepository.deleteAuthUser()
         currentUser = nil
     }
 }

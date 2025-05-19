@@ -15,32 +15,34 @@ final class SwiftDataUserRepository {
     
     init() {
         do {
-            container = try ModelContainer(for: LocalUserModel.self)
+            container = try ModelContainer(for: AccountModel.self)
             context = container.mainContext
         } catch {
             fatalError("ModelContainer setup failed: \(error)")
         }
     }
     
-    func saveUser(_ user: User) throws {
-        let localUser = LocalUserModel(id: user.id, email: user.email)
-        context.insert(localUser)
+    func saveAuthUser(_ authUser: AccountModel) throws {
+        context.insert(authUser)
         try context.save()
     }
     
-    func getCurrentUser() throws -> User? {
-        let descriptor = FetchDescriptor<LocalUserModel>()
+    func getCurrentAuthUser() throws -> AccountModel? {
+        let descriptor = FetchDescriptor<AccountModel>()
         let users = try context.fetch(descriptor)
-        guard let user = users.first else { return nil }
-        return User(id: user.id, email: user.email)
+        return users.first
     }
     
-    func deleteUser() throws {
-        let descriptor = FetchDescriptor<LocalUserModel>()
+    func deleteAuthUser() throws {
+        let descriptor = FetchDescriptor<AccountModel>()
         let users = try context.fetch(descriptor)
         for user in users {
             context.delete(user)
         }
+        try context.save()
+    }
+    
+    func updateAuthUser(_ authUser: AccountModel) throws {
         try context.save()
     }
 } 

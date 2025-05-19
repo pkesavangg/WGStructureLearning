@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct LoginResponse: Codable {
+struct Account: Codable {
     let account: UserResponse
     let accessToken: String
     let refreshToken: String

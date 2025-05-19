@@ -7,7 +7,7 @@
 
 import Foundation
 
-class FirebaseAuthRepository: AuthRepository {
+class FirebaseAuthRepository {
     func signIn(email: String, password: String) async throws -> Bool {
         // TODO: Implement actual Firebase authentication
         // For now, return true for testing

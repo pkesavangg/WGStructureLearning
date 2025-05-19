@@ -10,4 +10,4 @@ final class LocalUserModel {
         self.id = id
         self.email = email
     }
-} 
+}
