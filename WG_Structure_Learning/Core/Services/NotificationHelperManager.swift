@@ -5,18 +5,6 @@
 //  Created by Kesavan Panchabakesan on 19/05/25.
 //
 
-// MARK: - Loader Messages
-struct LoaderStrings {
-    static let loading = "Loading..."
-    static let saving = "Saving..."
-    static let deleting = "Deleting..."
-    static let loggingIn = "Logging in..."
-    static let uploading = "Uploading..."
-    static let sending = "Sending..."
-    static let updating = "Updating..."
-}
-
-
 import Foundation
 import SwiftUI
 
