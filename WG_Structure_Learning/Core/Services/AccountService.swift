@@ -14,6 +14,7 @@ final class AccountService {
 
     private let userRepository = SwiftDataUserRepository()
     private let firebaseRepository = FirebaseAuthRepository()
+    private let httpClient = HTTPClient.shared
 
     var isAuthenticated: Bool {
         return currentUser != nil
@@ -28,14 +29,32 @@ final class AccountService {
     }
     
     func signIn(email: String, password: String) async throws -> Bool {
+        // First try Firebase authentication
         let success = try await firebaseRepository.signIn(email: email, password: password)
         if success {
-            let user = User(id: UUID().uuidString, email: email)
-            try userRepository.saveUser(user)
-            currentUser = user
+            // Make API call to backend using HTTPClient
+            let loginRequest = LoginRequest(email: email, password: password)
+            
+            do {
+                let response: LoginResponse = try await httpClient.send(
+                    .login,
+                    method: "POST",
+                    body: loginRequest
+                )
+                
+                print("API Response:", response)
+                
+                // Create and save user with the account data
+                let user = User(id: response.account.id, email: response.account.email)
+                try userRepository.saveUser(user)
+                currentUser = user
+                return true
+            } catch {
+                print("API Error:", error)
+                throw error
+            }
         }
-        print(currentUser?.email ?? "No user found", " current user")
-        return success
+        return false
     }
 
     func loadCurrentUser() throws {
