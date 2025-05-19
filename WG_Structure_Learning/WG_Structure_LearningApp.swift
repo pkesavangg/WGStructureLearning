@@ -10,9 +10,17 @@ import SwiftUI
 @main
 struct WG_Structure_LearningApp: App {
     let dependencyService = DependencyService.shared
+    let themeManager = ThemeManager.shared
+    let notificationHelperManager = NotificationHelperManager.shared
     var body: some Scene {
         WindowGroup {
-            RootView()
+            ZStack {
+                RootView()
+                LoaderView()
+            }
+            .themeable()
+            .environmentObject(themeManager)
+            .environment(notificationHelperManager)
         }
     }
 }
