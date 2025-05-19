@@ -67,4 +67,5 @@ struct LandingScreen: View {
 
 #Preview {
     LandingScreen()
+        .environmentObject(ThemeManager.shared)
 }
