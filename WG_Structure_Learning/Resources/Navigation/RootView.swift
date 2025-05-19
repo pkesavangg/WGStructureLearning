@@ -8,7 +8,7 @@ struct RootView: View {
             if viewModel.isAuthenticated {
                 MainTabView()
             } else {
-                LoginScreen()
+                LandingScreen()
             }
         }
     }
