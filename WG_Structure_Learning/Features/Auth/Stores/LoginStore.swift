@@ -14,7 +14,7 @@ final class LoginStore {
         isLoading = true
         error = nil
         do {
-            let success = try await accountService.signIn(email: email, password: password)
+            let success = try await accountService.login(email: email, password: password)
             if success {
                 isAuthenticated = true
             } else {
