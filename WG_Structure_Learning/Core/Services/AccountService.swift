@@ -12,6 +12,7 @@ import SwiftData
 final class AccountService {
     static let shared = AccountService()
     var currentUser: AccountModel? = nil
+    var allAccounts: [AccountModel] = []
 
     private let userRepository = SwiftDataUserRepository()
     private let authRepository = AuthRepository()
@@ -23,6 +24,7 @@ final class AccountService {
     init() {
         do {
             try loadCurrentUser()
+            try loadAllAccounts()
         } catch {
             print("Failed to load current user:", error)
         }
@@ -35,6 +37,7 @@ final class AccountService {
             let authUser = AccountModel(from: response)
             try userRepository.saveAuthUser(authUser)
             currentUser = authUser
+            try loadAllAccounts()
             return true
         } catch {
             throw error
@@ -47,6 +50,7 @@ final class AccountService {
             let authUser = AccountModel(from: response)
             try userRepository.saveAuthUser(authUser)
             currentUser = authUser
+            try loadAllAccounts()
             return true
         } catch {
             throw error
@@ -54,7 +58,7 @@ final class AccountService {
     }
     
     func updateUserProfile() async throws {
-        guard let currentUser = currentUser else { return }
+        guard currentUser != nil  else { return }
         
         do {
             let response = try await authRepository.updateAccount()
@@ -62,6 +66,7 @@ final class AccountService {
             let updatedAuthUser = AccountModel(from: response)
             try userRepository.updateAuthUser(updatedAuthUser)
             self.currentUser = updatedAuthUser
+            try loadAllAccounts()
         } catch {
             print("Failed to update user profile:", error)
             throw error
@@ -69,21 +74,31 @@ final class AccountService {
     }
 
     func loadCurrentUser() throws {
-        if let savedUser = try userRepository.getCurrentAuthUser() {
-            currentUser = savedUser
-        }
+        currentUser = try userRepository.getCurrentAuthUser()
+    }
+    
+    func loadAllAccounts() throws {
+        allAccounts = try userRepository.getAllAccounts()
+    }
+    
+    func switchAccount(to accountId: String) throws {
+        try userRepository.switchAccount(to: accountId)
+        try loadCurrentUser()
     }
 
     func signOut() async throws {
         try await authRepository.logout()
-        try userRepository.deleteAuthUser()
+        try userRepository.logout() // This will only set isLogin to false
         currentUser = nil
+        try loadAllAccounts() // Reload accounts to update the list
     }
     
     func deleteAccount() async throws {
+        guard let currentUser = currentUser else { return }
         try await authRepository.deleteAccount()
-        try userRepository.deleteAuthUser()
-        currentUser = nil
+        try userRepository.deleteAccount(accountId: currentUser.id)
+        self.currentUser = nil
+        try loadAllAccounts()
     }
 }
 

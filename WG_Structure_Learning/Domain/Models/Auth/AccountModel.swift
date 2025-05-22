@@ -28,6 +28,7 @@ final class AccountModel {
     var initialWeight: Double?
     var shouldSendEntryNotifications: Bool
     var shouldSendWeightInEntryNotifications: Bool
+    var isLogin: Bool
     
     // Auth Data
     var accessToken: String
@@ -59,6 +60,7 @@ final class AccountModel {
         self.initialWeight = response.account.initialWeight
         self.shouldSendEntryNotifications = response.account.shouldSendEntryNotifications
         self.shouldSendWeightInEntryNotifications = response.account.shouldSendWeightInEntryNotifications
+        self.isLogin = false
         
         // Auth data
         self.accessToken = response.accessToken
