@@ -10,27 +10,27 @@ import Foundation
 
 struct UserResponse: Codable {
     let id: String
-    let email: String
-    let firstName: String
-    let lastName: String
-    let gender: Gender
-    let zipcode: String
-    let weightUnit: WeightUnit
-    let isWeightlessOn: Bool
-    let preferredInputMethod: String?
-    let height: Double?
-    let activityLevel: ActivityLevel
-    let dob: String
-    let weightlessBodyFat: Double?
-    let weightlessMuscle: Double?
-    let weightlessTimestamp: String?
-    let weightlessWeight: Double?
-    let isStreakOn: Bool
-    let dashboardType: String
-    let dashboardMetrics: [String]
-    let goalType: GoalType?
-    let goalWeight: Double?
-    let initialWeight: Double?
-    let shouldSendEntryNotifications: Bool
-    let shouldSendWeightInEntryNotifications: Bool
-} 
+    var email: String
+    var firstName: String
+    var lastName: String
+    var gender: Gender
+    var zipcode: String
+    var weightUnit: WeightUnit
+    var isWeightlessOn: Bool
+    var preferredInputMethod: String?
+    var height: Double?
+    var activityLevel: ActivityLevel
+    var dob: String
+    var weightlessBodyFat: Double?
+    var weightlessMuscle: Double?
+    var weightlessTimestamp: String?
+    var weightlessWeight: Double?
+    var isStreakOn: Bool
+    var dashboardType: String
+    var dashboardMetrics: [String]
+    var goalType: GoalType?
+    var goalWeight: Double?
+    var initialWeight: Double?
+    var shouldSendEntryNotifications: Bool
+    var shouldSendWeightInEntryNotifications: Bool
+}

@@ -63,6 +63,8 @@ final class HTTPClient {
         allHeaders.forEach { request.setValue($1, forHTTPHeaderField: $0) }
 
         request.httpBody = try JSONEncoder().encode(body)
+        
+        print("Request Body: \(String(data: request.httpBody ?? Data(), encoding: .utf8) ?? "")", request.httpBody, allHeaders)
         return try await send(request: request)
     }
 
@@ -88,7 +90,8 @@ final class HTTPClient {
                 throw NetworkError.decodingError
             }
         }
-
+        print(httpResponse.statusCode, "HTTP Response Status Code")
+        print("Response Data: \(String(data: data, encoding: .utf8) ?? "")", data)
         do {
             return try JSONDecoder().decode(T.self, from: data)
         } catch {

@@ -68,3 +68,40 @@ final class AccountModel {
         self.expiresAt = response.expiresAt
     }
 } 
+
+extension AccountModel {
+    func toAccount() -> Account {
+        let userResponse = UserResponse(
+            id: id,
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            gender: Gender(rawValue: gender)!,
+            zipcode: zipcode,
+            weightUnit: WeightUnit(rawValue: weightUnit)!,
+            isWeightlessOn: isWeightlessOn,
+            preferredInputMethod: preferredInputMethod,
+            height: height,
+            activityLevel: ActivityLevel(rawValue: activityLevel)!,
+            dob: dob,
+            weightlessBodyFat: weightlessBodyFat,
+            weightlessMuscle: weightlessMuscle,
+            weightlessTimestamp: weightlessTimestamp,
+            weightlessWeight: weightlessWeight,
+            isStreakOn: isStreakOn,
+            dashboardType: dashboardType,
+            dashboardMetrics: dashboardMetrics,
+            goalType: goalType.flatMap { GoalType(rawValue: $0) },
+            goalWeight: goalWeight,
+            initialWeight: initialWeight,
+            shouldSendEntryNotifications: shouldSendEntryNotifications,
+            shouldSendWeightInEntryNotifications: shouldSendWeightInEntryNotifications
+        )
+        return Account(
+            account: userResponse,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expiresAt: expiresAt
+        )
+    }
+}

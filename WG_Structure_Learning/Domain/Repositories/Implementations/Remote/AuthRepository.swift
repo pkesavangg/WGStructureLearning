@@ -31,12 +31,15 @@ final class AuthRepository {
         )
     }
     
-    func updateAccount() async throws -> Account {
-//        return try await httpClient.send(
-//            .getAccount,
-//            method: "GET"
-//        )
-        throw URLError(.badURL)
+    func updateAccount(updateData: SignupRequest) async throws -> Account {
+        // Create a JSON-encodable wrapper for the dictionary data
+        
+        return try await httpClient.send(
+            .updateAccount,
+            method: "PUT",
+            body: updateData,
+            needsAuth: true
+        )
     }
     
     func logout() async throws -> EmptyResponse {

@@ -9,7 +9,7 @@
 import Foundation
 
 struct Account: Codable {
-    let account: UserResponse
+    var account: UserResponse
     let accessToken: String
     let refreshToken: String
     let expiresAt: String

@@ -7,12 +7,19 @@
 import Foundation
 import SwiftData
 
+extension Array where Element == AccountModel {
+    func toAccounts() -> [Account] {
+        return self.map { $0.toAccount() }
+    }
+}
+
+
 @MainActor
 @Observable
 final class AccountService {
     static let shared = AccountService()
-    var currentUser: AccountModel? = nil
-    var allAccounts: [AccountModel] = []
+    var currentUser: Account? = nil
+    var allAccounts: [Account] = []
 
     private let userRepository = SwiftDataUserRepository()
     private let authRepository = AuthRepository()
@@ -36,7 +43,7 @@ final class AccountService {
             // Create and save auth user with the response data
             let authUser = AccountModel(from: response)
             try userRepository.saveAuthUser(authUser)
-            currentUser = authUser
+            currentUser = response
             try loadAllAccounts()
             return true
         } catch {
@@ -49,7 +56,7 @@ final class AccountService {
             let response = try await authRepository.createAccount(requestData: data)
             let authUser = AccountModel(from: response)
             try userRepository.saveAuthUser(authUser)
-            currentUser = authUser
+            currentUser = response
             try loadAllAccounts()
             return true
         } catch {
@@ -57,15 +64,42 @@ final class AccountService {
         }
     }
     
-    func updateUserProfile() async throws {
-        guard currentUser != nil  else { return }
+    func updateUserProfile(firstName: String, lastName: String, dob: Date) async throws {
+        guard let currentUser = currentUser else { return }
+        
+    
         
         do {
-            let response = try await authRepository.updateAccount()
-            // Update the current user with new data
+            // Format the date to string in ISO8601 format
+            let formatter = ISO8601DateFormatter()
+            let dobString = formatter.string(from: dob)
+            
+            // Create a dictionary with the updated profile data
+            let updateData: [String: Any] = [
+                "firstName": firstName,
+                "lastName": lastName,
+                "dob": dobString
+            ]
+        
+            let request = SignupRequest(
+                email: currentUser.account.email,
+                password: nil, // or fetch securely if needed
+                firstName: firstName,
+                lastName: lastName.isEmpty ? " " : lastName,
+                gender: currentUser.account.gender.rawValue,
+                zipcode: currentUser.account.zipcode,
+                dob: dobString,
+                height: currentUser.account.height ?? 0.0,
+                device: nil // provide if you want to track device info
+            )
+//
+//            // Send the update request to the API
+            let response = try await authRepository.updateAccount(updateData: request)
+            print(response, "Response in updateAccount")
+            // Update the current user with new data from the response
             let updatedAuthUser = AccountModel(from: response)
             try userRepository.updateAuthUser(updatedAuthUser)
-            self.currentUser = updatedAuthUser
+            self.currentUser = response
             try loadAllAccounts()
         } catch {
             print("Failed to update user profile:", error)
@@ -74,11 +108,16 @@ final class AccountService {
     }
 
     func loadCurrentUser() throws {
-        currentUser = try userRepository.getCurrentAuthUser()
+        if let accountModel = try userRepository.getCurrentAuthUser() {
+            currentUser = accountModel.toAccount()
+        } else {
+            currentUser = nil
+        }
     }
-    
+
     func loadAllAccounts() throws {
-        allAccounts = try userRepository.getAllAccounts()
+        let models = try userRepository.getAllAccounts()
+        allAccounts = models.toAccounts()
     }
     
     func switchAccount(to accountId: String) throws {
@@ -93,6 +132,7 @@ final class AccountService {
             currentUser = nil
             try loadAllAccounts() // Reload accounts to update the list
         } catch {
+            print(error, "Error in signOut")
             throw error
         }
     }
@@ -100,7 +140,7 @@ final class AccountService {
     func deleteAccount() async throws {
         guard let currentUser = currentUser else { return }
         try await authRepository.deleteAccount()
-        try userRepository.deleteAccount(accountId: currentUser.id)
+        try userRepository.deleteAccount(accountId: currentUser.account.id)
         self.currentUser = nil
         try loadAllAccounts()
     }
