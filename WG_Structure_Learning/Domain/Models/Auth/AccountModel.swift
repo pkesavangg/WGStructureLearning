@@ -63,9 +63,9 @@ final class AccountModel {
         self.isLogin = false
         
         // Auth data
-        self.accessToken = response.accessToken
-        self.refreshToken = response.refreshToken
-        self.expiresAt = response.expiresAt
+        self.accessToken = response.accessToken ?? ""
+        self.refreshToken = response.refreshToken ?? ""
+        self.expiresAt = response.expiresAt ?? ""
     }
 } 
 
@@ -99,9 +99,9 @@ extension AccountModel {
         )
         return Account(
             account: userResponse,
-            accessToken: accessToken,
-            refreshToken: refreshToken,
-            expiresAt: expiresAt
+            accessToken: accessToken ?? "",
+            refreshToken: refreshToken ?? "",
+            expiresAt: expiresAt ?? "",
         )
     }
 }

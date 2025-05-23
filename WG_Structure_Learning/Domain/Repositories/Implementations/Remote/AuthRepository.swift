@@ -53,11 +53,11 @@ final class AuthRepository {
 
     
     func deleteAccount() async throws  -> EmptyResponse {
-//        try await httpClient.send(
-//            .deleteAccount,
-//            method: "DELETE",
-//            body: EmptyBody()
-//        )
-        throw URLError(.badURL)
+        try await httpClient.send(
+            .deleteAccount,
+            method: "DELETE",
+            body: EmptyBody(),
+            needsAuth: true
+        )
     }
 }

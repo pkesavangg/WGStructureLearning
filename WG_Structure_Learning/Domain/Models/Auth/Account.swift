@@ -10,7 +10,7 @@ import Foundation
 
 struct Account: Codable {
     var account: UserResponse
-    let accessToken: String
-    let refreshToken: String
-    let expiresAt: String
+    let accessToken: String?
+    let refreshToken: String?
+    let expiresAt: String?
 } 

@@ -89,13 +89,11 @@ final class AccountService {
                 gender: currentUser.account.gender.rawValue,
                 zipcode: currentUser.account.zipcode,
                 dob: dobString,
-                height: currentUser.account.height ?? 0.0,
+                height: currentUser.account.height ?? 0,
                 device: nil // provide if you want to track device info
             )
-//
-//            // Send the update request to the API
+            
             let response = try await authRepository.updateAccount(updateData: request)
-            print(response, "Response in updateAccount")
             // Update the current user with new data from the response
             let updatedAuthUser = AccountModel(from: response)
             try userRepository.updateAuthUser(updatedAuthUser)

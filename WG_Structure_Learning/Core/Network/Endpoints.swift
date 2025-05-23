@@ -19,6 +19,7 @@ enum Endpoint {
     case refreshToken
     case accountInfo
     case updateAccount
+    case deleteAccount
     case changePassword
     case requestPasswordReset
     case checkPasswordResetToken
@@ -112,6 +113,8 @@ enum Endpoint {
             request.httpBody = try? JSONSerialization.data(withJSONObject: body)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             return request
+        case .deleteAccount:
+            return deleteRequest(path: "/account/")
         }
     }
 

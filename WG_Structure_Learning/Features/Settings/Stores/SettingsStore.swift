@@ -51,4 +51,17 @@ final class SettingsStore: ObservableObject {
             isUpdatingProfile = false
         }
     }
+    func deleteAccount() async -> Bool {
+        isUpdatingProfile = true
+        do {
+            try await accountService.deleteAccount()
+            isUpdatingProfile = false
+            return true
+        } catch {
+            print("Error deleting account: \(error)")
+            profileUpdateError = error.localizedDescription
+            isUpdatingProfile = false
+            return false
+        }
+    }
 } 
