@@ -43,7 +43,8 @@ final class AuthRepository {
         try await httpClient.send(
             .logout,
             method: "POST",
-            body: EmptyBody()
+            body: EmptyBody(),
+            needsAuth: true
         )
     }
 

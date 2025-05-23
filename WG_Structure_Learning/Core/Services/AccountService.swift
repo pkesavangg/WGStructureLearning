@@ -87,10 +87,14 @@ final class AccountService {
     }
 
     func signOut() async throws {
-        try await authRepository.logout()
-        try userRepository.logout() // This will only set isLogin to false
-        currentUser = nil
-        try loadAllAccounts() // Reload accounts to update the list
+        do {
+            try await authRepository.logout()
+            try userRepository.logout() // This will only set isLogin to false
+            currentUser = nil
+            try loadAllAccounts() // Reload accounts to update the list
+        } catch {
+            throw error
+        }
     }
     
     func deleteAccount() async throws {
