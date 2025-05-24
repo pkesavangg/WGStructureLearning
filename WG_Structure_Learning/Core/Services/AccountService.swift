@@ -67,20 +67,12 @@ final class AccountService {
     func updateUserProfile(firstName: String, lastName: String, dob: Date) async throws {
         guard let currentUser = currentUser else { return }
         
-    
-        
         do {
             // Format the date to string in ISO8601 format
             let formatter = ISO8601DateFormatter()
             let dobString = formatter.string(from: dob)
             
-            // Create a dictionary with the updated profile data
-            let updateData: [String: Any] = [
-                "firstName": firstName,
-                "lastName": lastName,
-                "dob": dobString
-            ]
-        
+            // Create the request with the updated profile data
             let request = UserProfile(
                 email: currentUser.account.email,
                 password: nil, // or fetch securely if needed
@@ -93,11 +85,22 @@ final class AccountService {
                 device: nil // provide if you want to track device info
             )
             
+            // Make the API call to update the account
             let response = try await authRepository.updateAccount(updateData: request)
+            
+            // Create a new Account object that preserves the tokens from the current user
+            // if they're not present in the response
+            let preservedResponse = Account(
+                account: response.account,
+                accessToken: response.accessToken ?? currentUser.accessToken,
+                refreshToken: response.refreshToken ?? currentUser.refreshToken,
+                expiresAt: response.expiresAt ?? currentUser.expiresAt
+            )
+            
             // Update the current user with new data from the response
-            let updatedAuthUser = AccountModel(from: response)
+            let updatedAuthUser = AccountModel(from: preservedResponse)
             try userRepository.saveAuthUser(updatedAuthUser)
-            self.currentUser = response
+            self.currentUser = preservedResponse
             try loadAllAccounts()
         } catch {
             print("Failed to update user profile:", error)
