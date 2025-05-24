@@ -5,11 +5,16 @@ struct RootView: View {
     
     var body: some View {
         Group {
-            if viewModel.isAuthenticated {
+            if viewModel.canShowLoader {
+                ProgressView("Loading...")
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if viewModel.isAuthenticated {
                 MainTabView()
             } else {
                 LandingScreen()
             }
+            
         }
     }
 }

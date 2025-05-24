@@ -53,8 +53,5 @@ struct SignupScreen: View {
             })
             .navigationBarHidden(true)
         }
-        .onAppear {
-            store.checkExistingSession()
-        }
     }
 }

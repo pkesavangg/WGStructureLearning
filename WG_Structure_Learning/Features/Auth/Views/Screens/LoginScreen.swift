@@ -49,8 +49,5 @@ struct LoginScreen: View {
             }
             .navigationBarHidden(true)
         }
-        .onAppear {
-            store.checkExistingSession()
-        }
     }
 } 

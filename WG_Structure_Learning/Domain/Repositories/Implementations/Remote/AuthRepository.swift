@@ -42,6 +42,13 @@ final class AuthRepository {
         )
     }
     
+    func getAccountInfo() async throws -> Account {
+        return try await httpClient.get(
+            .accountInfo,
+            needsAuth: true
+        )
+    }
+    
     func logout() async throws -> EmptyResponse {
         try await httpClient.send(
             .logout,

@@ -23,17 +23,22 @@ final class AccountService {
 
     private let userRepository = SwiftDataUserRepository()
     private let authRepository = AuthRepository()
+    var isDataFetching = true
 
     var isAuthenticated: Bool {
         return currentUser != nil
     }
 
     init() {
-        do {
-            try loadCurrentUser()
-            try loadAllAccounts()
-        } catch {
-            print("Failed to load current user:", error)
+        Task {
+            isDataFetching = true
+            do {
+                try await loadCurrentUser()
+                try loadAllAccounts()
+            } catch {
+                print("Failed to load current user:", error)
+            }
+            isDataFetching = false
         }
     }
     
@@ -108,11 +113,42 @@ final class AccountService {
         }
     }
 
-    func loadCurrentUser() throws {
-        if let accountModel = try userRepository.getCurrentAuthUser() {
-            currentUser = accountModel.toAccount()
-        } else {
-            currentUser = nil
+    func loadCurrentUser() async throws {
+        do {
+            // First check if we have a logged-in user in SwiftData
+            if let accountModel = try userRepository.getCurrentAuthUser() {
+                currentUser = accountModel.toAccount()
+                // We have a user in SwiftData, try to get updated info from API
+                do {
+                    // Try to get account info from API
+                    let apiAccount = try await authRepository.getAccountInfo()
+                    
+                    // Create a new Account object that preserves the tokens from the current user
+                    // if they're not present in the response
+                    let preservedResponse = Account(
+                        account: apiAccount.account,
+                        accessToken: apiAccount.accessToken ?? accountModel.accessToken,
+                        refreshToken: apiAccount.refreshToken ?? accountModel.refreshToken,
+                        expiresAt: apiAccount.expiresAt ?? accountModel.expiresAt
+                    )
+                    
+                    // Update SwiftData with the latest account info
+                    let updatedAuthUser = AccountModel(from: preservedResponse)
+                    try userRepository.saveAuthUser(updatedAuthUser)
+                    
+                    // Update current user with the latest info
+                    currentUser = preservedResponse
+                } catch {
+                    // If API call fails, use the cached data from SwiftData
+                    print("Failed to get account info from API: \(error). Using cached data.")
+                }
+            } else {
+                // No logged-in user in SwiftData
+                currentUser = nil
+            }
+        } catch {
+            print("Error in loadCurrentUser: \(error)")
+            throw error
         }
     }
 
@@ -121,9 +157,9 @@ final class AccountService {
         allAccounts = models.toAccounts()
     }
     
-    func switchAccount(to accountId: String) throws {
+    func switchAccount(to accountId: String) async throws {
         try userRepository.switchAccount(to: accountId)
-        try loadCurrentUser()
+        try await loadCurrentUser()
     }
 
     func signOut() async throws {

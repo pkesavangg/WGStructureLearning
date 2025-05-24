@@ -27,4 +27,8 @@ class RootViewModel {
     var isAuthenticated: Bool {
         accountService.currentUser != nil
     }
-} 
+    
+    var canShowLoader: Bool {
+        accountService.isDataFetching
+    }
+}

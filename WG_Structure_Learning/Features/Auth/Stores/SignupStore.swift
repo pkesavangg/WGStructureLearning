@@ -26,9 +26,9 @@ final class SignupStore {
         isLoading = false
     }
     
-    func checkExistingSession() {
+    func checkExistingSession() async {
         do {
-            try accountService.loadCurrentUser()
+            try await accountService.loadCurrentUser()
             isAuthenticated = accountService.isAuthenticated
         } catch {
             isAuthenticated = false
