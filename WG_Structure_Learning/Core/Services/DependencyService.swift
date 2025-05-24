@@ -5,6 +5,8 @@
 //  Created by Kesavan Panchabakesan on 15/05/25.
 //
 
+import Foundation
+
 @MainActor
 class DependencyService {
     static let shared = DependencyService()
@@ -15,10 +17,12 @@ class DependencyService {
     
     @MainActor private func registerService() {
         DependencyContainer.shared.register(AccountService())
+        DependencyContainer.shared.register(HistoryService())
     }
     
     nonisolated private func deRegisterServices() {
         DependencyContainer.shared.dependencies.removeValue(forKey: String(describing: AccountService.self))
+        DependencyContainer.shared.dependencies.removeValue(forKey: String(describing: HistoryService.self))
     }
 
     

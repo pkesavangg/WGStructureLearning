@@ -61,6 +61,7 @@ final class AccountService {
             try loadAllAccounts()
             return true
         } catch {
+            print("Error logging in: \(error)")
             throw error
         }
     }

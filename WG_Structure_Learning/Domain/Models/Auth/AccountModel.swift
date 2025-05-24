@@ -99,9 +99,9 @@ extension AccountModel {
         )
         return Account(
             account: userResponse,
-            accessToken: accessToken ?? "",
-            refreshToken: refreshToken ?? "",
-            expiresAt: expiresAt ?? "",
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expiresAt: expiresAt
         )
     }
 }

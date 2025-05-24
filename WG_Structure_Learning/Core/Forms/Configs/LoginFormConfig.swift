@@ -1,8 +1,8 @@
 import Foundation
 
 struct LoginFormConfig {
-    var email: String = ""
-    var password: String = ""
+    var email: String = "pkesavan@greatergoods.com"
+    var password: String = "123456"
     
     var isEmailValid: Bool {
         FormValidator.isValidEmail(email)

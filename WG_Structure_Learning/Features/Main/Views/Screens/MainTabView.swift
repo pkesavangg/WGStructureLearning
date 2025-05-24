@@ -13,9 +13,9 @@ struct MainTabView: View {
                     Label("Explore", systemImage: "safari.fill")
                 }
             
-            Text("Profile")
+            HistoryView()
                 .tabItem {
-                    Label("Profile", systemImage: "person.fill")
+                    Label("History", systemImage: "list.bullet.clipboard")
                 }
             
             SettingsView()

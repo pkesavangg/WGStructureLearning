@@ -15,6 +15,7 @@ final class SwiftDataUserRepository {
     
     init() {
         do {
+            // Use the simplest form for now to avoid conflicts
             container = try ModelContainer(for: AccountModel.self)
             context = container.mainContext
         } catch {

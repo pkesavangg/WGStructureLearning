@@ -33,6 +33,7 @@ enum Endpoint {
     case updateDashboardMetrics
     case updateNotifications
     case operations(startTimestamp: String?)
+    case operationsR4(startTimestamp: String?) // New endpoint for /operation/r4
     case submitOperation
     case operationsCSV(utcOffset: Int?, download: Bool?)
     case flags
@@ -80,6 +81,13 @@ enum Endpoint {
             return patchRequest(path: "/account/notification")
         case .operations(let startTimestamp):
             var components = URLComponents(string: "\(API.baseURL)/operation")
+            if let timestamp = startTimestamp {
+                components?.queryItems = [URLQueryItem(name: "start", value: timestamp)]
+            }
+            guard let url = components?.url else { return nil }
+            return URLRequest(url: url)
+        case .operationsR4(let startTimestamp):
+            var components = URLComponents(string: "\(API.baseURL)/operation/r4")
             if let timestamp = startTimestamp {
                 components?.queryItems = [URLQueryItem(name: "start", value: timestamp)]
             }
