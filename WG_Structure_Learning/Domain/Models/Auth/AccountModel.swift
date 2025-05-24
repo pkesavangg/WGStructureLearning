@@ -58,8 +58,8 @@ final class AccountModel {
         self.goalType = response.account.goalType?.rawValue
         self.goalWeight = response.account.goalWeight
         self.initialWeight = response.account.initialWeight
-        self.shouldSendEntryNotifications = response.account.shouldSendEntryNotifications
-        self.shouldSendWeightInEntryNotifications = response.account.shouldSendWeightInEntryNotifications
+        self.shouldSendEntryNotifications = response.account.shouldSendEntryNotifications ?? false
+        self.shouldSendWeightInEntryNotifications = response.account.shouldSendWeightInEntryNotifications ?? false
         self.isLogin = false
         
         // Auth data

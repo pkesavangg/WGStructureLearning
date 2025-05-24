@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct SignupRequest: Codable {
+struct UserProfile: Codable {
     let email: String
     let password: String?
     let firstName: String

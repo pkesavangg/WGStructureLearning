@@ -9,7 +9,7 @@ enum AuthRoute: Routable {
         case .login:
             LoginScreen()
         case .signup:
-            EmptyView()
+            SignupScreen()
         }
     }
 }

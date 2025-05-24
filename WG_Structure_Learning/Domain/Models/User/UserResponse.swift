@@ -31,6 +31,6 @@ struct UserResponse: Codable {
     var goalType: GoalType?
     var goalWeight: Double?
     var initialWeight: Double?
-    var shouldSendEntryNotifications: Bool
-    var shouldSendWeightInEntryNotifications: Bool
+    var shouldSendEntryNotifications: Bool?
+    var shouldSendWeightInEntryNotifications: Bool?
 }

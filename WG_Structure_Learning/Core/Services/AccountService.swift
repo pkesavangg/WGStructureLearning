@@ -51,7 +51,7 @@ final class AccountService {
         }
     }
     
-    func createAccount(_ data: SignupRequest) async throws -> Bool {
+    func createAccount(_ data: UserProfile) async throws -> Bool {
         do {
             let response = try await authRepository.createAccount(requestData: data)
             let authUser = AccountModel(from: response)
@@ -81,7 +81,7 @@ final class AccountService {
                 "dob": dobString
             ]
         
-            let request = SignupRequest(
+            let request = UserProfile(
                 email: currentUser.account.email,
                 password: nil, // or fetch securely if needed
                 firstName: firstName,
@@ -96,7 +96,7 @@ final class AccountService {
             let response = try await authRepository.updateAccount(updateData: request)
             // Update the current user with new data from the response
             let updatedAuthUser = AccountModel(from: response)
-            try userRepository.updateAuthUser(updatedAuthUser)
+            try userRepository.saveAuthUser(updatedAuthUser)
             self.currentUser = response
             try loadAllAccounts()
         } catch {

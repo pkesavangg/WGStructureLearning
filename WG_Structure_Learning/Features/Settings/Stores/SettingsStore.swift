@@ -12,10 +12,32 @@ final class SettingsStore: ObservableObject {
     @Published var profileUpdateError: String? = nil
     
     // Mock user data based on the sample provided
-    @Published var firstName = "g"
-    @Published var lastName = "P"
-    @Published var email = "pkesavan@greatergoods.com"
+    @Published var firstName = ""
+    @Published var lastName = ""
+    @Published var email = ""
     @Published var dob = Date(timeIntervalSince1970: 907372800) // 1998-10-03
+    
+    init() {
+        // Load user data from the account service
+        loadUserData()
+    }
+    
+    private func loadUserData() {
+        // Load user data from the account service
+        if let user = accountService.currentUser {
+            self.firstName = user.account.firstName
+            self.lastName = user.account.lastName
+            self.email = user.account.email
+//            self.dob = user.account.dob
+            let formatter = ISO8601DateFormatter()
+            if let parsedDate = formatter.date(from: user.account.dob) {
+                self.dob = parsedDate
+            } else {
+                self.dob = Date(timeIntervalSince1970: 0) // fallback value
+            }
+            print(self.firstName, self.lastName, self.email, self.dob, "User data loaded")
+        }
+    }
     
     var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"

@@ -23,7 +23,7 @@ final class AuthRepository {
         )
     }
     
-    func createAccount(requestData: SignupRequest) async throws -> Account {
+    func createAccount(requestData: UserProfile) async throws -> Account {
         return try await httpClient.send(
             .signup,
             method: "POST",
@@ -31,7 +31,7 @@ final class AuthRepository {
         )
     }
     
-    func updateAccount(updateData: SignupRequest) async throws -> Account {
+    func updateAccount(updateData: UserProfile) async throws -> Account {
         // Create a JSON-encodable wrapper for the dictionary data
         
         return try await httpClient.send(
