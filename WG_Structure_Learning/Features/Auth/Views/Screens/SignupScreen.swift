@@ -19,7 +19,14 @@ struct SignupScreen: View {
                     SignupForm(
                         onSignup: { signupRequest in
                             Task {
-                                await store.signup(request: signupRequest)
+                                
+                                do {
+                                    try  await store.signup(request: signupRequest)
+                                    dismiss()
+                                } catch {
+                                    
+                                }
+                               
                             }
                         },
                         onLogin: {

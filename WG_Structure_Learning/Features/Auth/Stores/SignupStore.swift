@@ -10,7 +10,7 @@ final class SignupStore {
     var error: String?
     var isAuthenticated = false
     
-    func signup(request: UserProfile) async {
+    func signup(request: UserProfile) async throws {
         isLoading = true
         error = nil
         do {
@@ -22,6 +22,7 @@ final class SignupStore {
             }
         } catch {
             self.error = error.localizedDescription
+            throw error
         }
         isLoading = false
     }
