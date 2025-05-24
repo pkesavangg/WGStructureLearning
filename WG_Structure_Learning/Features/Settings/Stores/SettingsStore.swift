@@ -1,6 +1,12 @@
 import SwiftUI
 import Foundation
 
+// Account action options
+enum AccountAction {
+    case login
+    case signup
+}
+
 @MainActor
 final class SettingsStore: ObservableObject {
     @Injector private var accountService: AccountService
@@ -10,6 +16,11 @@ final class SettingsStore: ObservableObject {
     @Published var notificationsEnabled = true
     @Published var isUpdatingProfile = false
     @Published var profileUpdateError: String? = nil
+    
+    // Account switching related properties
+    @Published var showAccountSwitcher = false
+    @Published var showAddAccountOptions = false
+    @Published var selectedAccountAction: AccountAction? = nil
     
     // Mock user data based on the sample provided
     @Published var firstName = ""
@@ -81,6 +92,55 @@ final class SettingsStore: ObservableObject {
             return true
         } catch {
             print("Error deleting account: \(error)")
+            profileUpdateError = error.localizedDescription
+            isUpdatingProfile = false
+            return false
+        }
+    }
+    
+    // Get all accounts with their status
+    func getAllAccounts() -> [Account] {
+        return accountService.allAccounts
+    }
+    
+    // Check if an account is the current active account
+    func isCurrentAccount(accountId: String) -> Bool {
+        return accountService.isCurrentAccount(accountId: accountId)
+    }
+    
+    // Get the status of an account
+    func getAccountStatus(for accountId: String) -> AccountStatus {
+        return accountService.getAccountStatus(for: accountId)
+    }
+    
+    // Switch to a different account
+    func switchToAccount(accountId: String) async {
+        isUpdatingProfile = true
+        do {
+            try await accountService.switchAccount(to: accountId)
+            // Reload user data after switching
+            loadUserData()
+            isUpdatingProfile = false
+        } catch {
+            print("Error switching account: \(error)")
+            profileUpdateError = error.localizedDescription
+            isUpdatingProfile = false
+        }
+    }
+    
+    // Add a new account (login with different credentials)
+    func addNewAccount(email: String, password: String) async -> Bool {
+        isUpdatingProfile = true
+        do {
+            let success = try await accountService.addNewAccount(email: email, password: password)
+            if success {
+                // Reload user data after adding new account
+                loadUserData()
+            }
+            isUpdatingProfile = false
+            return success
+        } catch {
+            print("Error adding new account: \(error)")
             profileUpdateError = error.localizedDescription
             isUpdatingProfile = false
             return false

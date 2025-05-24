@@ -18,10 +18,27 @@ final class LoginStore {
             if success {
                 isAuthenticated = true
             } else {
-                error = "Invalid credentials"
+                error = "Login failed. Please try again."
             }
-        } catch {
-            self.error = error.localizedDescription
+        } catch let loginError {
+            error = loginError.localizedDescription
+        }
+        isLoading = false
+    }
+    
+    // Add a new account without logging out the current user
+    func addNewAccount(email: String, password: String) async {
+        isLoading = true
+        error = nil
+        do {
+            let success = try await accountService.addNewAccount(email: email, password: password)
+            if success {
+                isAuthenticated = true
+            } else {
+                error = "Adding account failed. Please try again."
+            }
+        } catch let addError {
+            error = addError.localizedDescription
         }
         isLoading = false
     }

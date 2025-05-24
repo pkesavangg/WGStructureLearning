@@ -13,6 +13,12 @@ extension Array where Element == AccountModel {
     }
 }
 
+// Account status enum to track login state
+enum AccountStatus {
+    case active    // Currently logged in and active
+    case inactive  // Logged in but not active
+    case disabled  // Not logged in
+}
 
 @MainActor
 @Observable
@@ -20,6 +26,9 @@ final class AccountService {
     static let shared = AccountService()
     var currentUser: Account? = nil
     var allAccounts: [Account] = []
+    
+    // Dictionary to track account status
+    private var accountStatuses: [String: AccountStatus] = [:]
 
     private let userRepository = SwiftDataUserRepository()
     private let authRepository = AuthRepository()
@@ -155,11 +164,58 @@ final class AccountService {
     func loadAllAccounts() throws {
         let models = try userRepository.getAllAccounts()
         allAccounts = models.toAccounts()
+        
+        // Update account statuses
+        updateAccountStatuses()
+    }
+    
+    // Update the status of all accounts
+    private func updateAccountStatuses() {
+        // Reset statuses
+        accountStatuses.removeAll()
+        
+        // Set statuses based on login state
+        for account in allAccounts {
+            let accountId = account.account.id
+            if let currentUser = currentUser, currentUser.account.id == accountId {
+                accountStatuses[accountId] = .active
+            } else if account.accessToken != nil && !account.accessToken!.isEmpty {
+                accountStatuses[accountId] = .inactive
+            } else {
+                accountStatuses[accountId] = .disabled
+            }
+        }
     }
     
     func switchAccount(to accountId: String) async throws {
         try userRepository.switchAccount(to: accountId)
         try await loadCurrentUser()
+        try loadAllAccounts() // Reload accounts to update statuses
+    }
+    
+    // Get the status of an account
+    func getAccountStatus(for accountId: String) -> AccountStatus {
+        return accountStatuses[accountId] ?? .disabled
+    }
+    
+    // Check if an account is the current active account
+    func isCurrentAccount(accountId: String) -> Bool {
+        return currentUser?.account.id == accountId
+    }
+    
+    // Add a new account (login with a different account)
+    func addNewAccount(email: String, password: String) async throws -> Bool {
+        // Similar to login but ensures we don't log out the current user
+        do {
+            let response = try await authRepository.login(email: email, password: password)
+            let authUser = AccountModel(from: response)
+            try userRepository.saveAdditionalAccount(authUser)
+            currentUser = response
+            try loadAllAccounts()
+            return true
+        } catch {
+            throw error
+        }
     }
 
     func signOut() async throws {

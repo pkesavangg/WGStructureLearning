@@ -10,6 +10,7 @@ import SwiftUI
 enum SettingsRoute: Routable {
     case profile
     case editProfile
+    case addAccount
     
     var body: some View {
         switch self {
@@ -17,6 +18,8 @@ enum SettingsRoute: Routable {
             ProfileView()
         case .editProfile:
             EmptyView()
+        case .addAccount:
+            LoginScreen(isAddingAccount: true)
         }
     }
 }

@@ -5,13 +5,16 @@ struct LoginScreen: View {
     @Bindable var store: LoginStore = LoginStore()
     @Environment(\.dismiss) private var dismiss
     
+    // Flag to indicate if this is for adding a new account
+    var isAddingAccount: Bool = false
+    
     var body: some View {
         NavigationView {
             ZStack {
                 VStack {
                     Spacer()
                     
-                    Text("Welcome Back")
+                    Text(isAddingAccount ? "Add Account" : "Welcome Back")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .padding(.bottom, 30)
@@ -19,7 +22,11 @@ struct LoginScreen: View {
                     LoginForm(
                         onLogin: { email, password in
                             Task {
-                                await store.login(email: email, password: password)
+                                if isAddingAccount {
+                                    await store.addNewAccount(email: email, password: password)
+                                } else {
+                                    await store.login(email: email, password: password)
+                                }
                             }
                         },
                         onForgotPassword: {
