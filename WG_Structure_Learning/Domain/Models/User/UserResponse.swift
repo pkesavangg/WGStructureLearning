@@ -33,4 +33,14 @@ struct UserResponse: Codable {
     var initialWeight: Double?
     var shouldSendEntryNotifications: Bool?
     var shouldSendWeightInEntryNotifications: Bool?
+    var isGoogleFitOn: Bool?
+    var isGoogleFitValid: Bool?
+    var isFitbitOn: Bool?
+    var isFitbitValid: Bool?
+    var isMFPOn: Bool?
+    var isMFPValid: Bool?
+    var isUAOn: Bool?
+    var isUAValid: Bool?
+    var isHealthConnectOn: Bool?
+    var isHealthKitOn: Bool?
 }

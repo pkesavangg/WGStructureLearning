@@ -17,7 +17,7 @@ struct HistoryEntry: Identifiable, Codable {
     let bmi: Double?
     let impedance: Double?
     let pulse: Double?
-    let unit: String
+    let unit: String?
     let visceralFatLevel: Double?
     let subcutaneousFatPercent: Double?
     let proteinPercent: Double?

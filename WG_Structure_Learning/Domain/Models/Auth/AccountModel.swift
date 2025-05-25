@@ -26,8 +26,18 @@ final class AccountModel {
     var goalType: String?
     var goalWeight: Double?
     var initialWeight: Double?
-    var shouldSendEntryNotifications: Bool
-    var shouldSendWeightInEntryNotifications: Bool
+    var isGoogleFitOn: Bool?
+    var isGoogleFitValid: Bool?
+    var isFitbitOn: Bool?
+    var isFitbitValid: Bool?
+    var isMFPOn: Bool?
+    var isMFPValid: Bool?
+    var isUAOn: Bool?
+    var isUAValid: Bool?
+    var isHealthConnectOn: Bool?
+    var isHealthKitOn: Bool?
+    var shouldSendEntryNotifications: Bool?
+    var shouldSendWeightInEntryNotifications: Bool?
     var isLogin: Bool
     
     // Auth Data
@@ -61,6 +71,12 @@ final class AccountModel {
         self.shouldSendEntryNotifications = response.account.shouldSendEntryNotifications ?? false
         self.shouldSendWeightInEntryNotifications = response.account.shouldSendWeightInEntryNotifications ?? false
         self.isLogin = false
+        self.isGoogleFitOn = false
+        self.isFitbitOn = false
+        self.isMFPOn = false
+        self.isUAOn = false
+        self.isHealthConnectOn = false
+        self.isHealthKitOn = false
         
         // Auth data
         self.accessToken = response.accessToken ?? ""
@@ -95,7 +111,15 @@ extension AccountModel {
             goalWeight: goalWeight,
             initialWeight: initialWeight,
             shouldSendEntryNotifications: shouldSendEntryNotifications,
-            shouldSendWeightInEntryNotifications: shouldSendWeightInEntryNotifications
+            shouldSendWeightInEntryNotifications: shouldSendWeightInEntryNotifications,
+            isGoogleFitOn: isMFPOn,
+            isGoogleFitValid: isGoogleFitOn,
+            isFitbitOn: isFitbitOn,
+            isFitbitValid: isUAOn,
+            isMFPOn: isHealthConnectOn,
+            isMFPValid: isHealthKitOn, isUAOn: isUAOn,
+            isHealthConnectOn: isHealthConnectOn, isHealthKitOn: isHealthKitOn
+            
         )
         return Account(
             account: userResponse,

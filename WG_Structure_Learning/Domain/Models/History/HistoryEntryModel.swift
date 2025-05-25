@@ -38,7 +38,7 @@ final class HistoryEntryModel {
         self.bmi = entry.bmi
         self.impedance = entry.impedance
         self.pulse = entry.pulse
-        self.unit = entry.unit
+        self.unit = entry.unit ?? "lb" // Default to "lbs" if unit is nil
         self.visceralFatLevel = entry.visceralFatLevel
         self.subcutaneousFatPercent = entry.subcutaneousFatPercent
         self.proteinPercent = entry.proteinPercent

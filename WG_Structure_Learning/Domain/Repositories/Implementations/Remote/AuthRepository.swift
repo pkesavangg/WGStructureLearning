@@ -42,7 +42,7 @@ final class AuthRepository {
         )
     }
     
-    func getAccountInfo() async throws -> Account {
+    func getAccountInfo() async throws -> UserResponse {
         return try await httpClient.get(
             .accountInfo,
             needsAuth: true

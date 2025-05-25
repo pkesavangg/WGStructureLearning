@@ -120,7 +120,7 @@ struct HistoryEntryRow: View {
                     Text(entry.formattedEntryDate)
                         .font(.headline)
                     
-                    Text(store.formatWeight(entry.weight ?? 0.0, unit: entry.unit))
+                    Text(store.formatWeight(entry.weight ?? 0.0, unit: entry.unit ?? "lb"))
                         .font(.title2)
                         .fontWeight(.bold)
                 }

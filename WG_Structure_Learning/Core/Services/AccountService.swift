@@ -136,10 +136,10 @@ final class AccountService {
                     // Create a new Account object that preserves the tokens from the current user
                     // if they're not present in the response
                     let preservedResponse = Account(
-                        account: apiAccount.account,
-                        accessToken: apiAccount.accessToken ?? accountModel.accessToken,
-                        refreshToken: apiAccount.refreshToken ?? accountModel.refreshToken,
-                        expiresAt: apiAccount.expiresAt ?? accountModel.expiresAt
+                        account: apiAccount,
+                        accessToken: accountModel.accessToken,
+                        refreshToken: accountModel.refreshToken ?? accountModel.refreshToken,
+                        expiresAt: accountModel.expiresAt ?? accountModel.expiresAt
                     )
                     
                     // Update SwiftData with the latest account info
